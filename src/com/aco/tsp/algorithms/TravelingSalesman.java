@@ -15,7 +15,7 @@ public class TravelingSalesman {
 
 	private Diagram diagram;
 	private int numOfAnts, generations;
-	private int iterator = 100;
+	private int iterator = 1;
 	private static List<String> bestDistances = new ArrayList<String>();
 
 	public TravelingSalesman(int ants, int generations, double evaporation, int alpha, int beta) {
@@ -30,7 +30,7 @@ public class TravelingSalesman {
 	public void run() {
 		TSPDisplayedWindow window = new TSPDisplayedWindow(diagram.getPoints());
 		Ant bestAnt = null;
-		int bestEval = 0;
+		int bestDistance = 0;
 		delay(1000); // Allow WindowTSP to load.
 		while(iterator != 0) {
 			iterator--;
@@ -40,24 +40,22 @@ public class TravelingSalesman {
 				updatePheromones(ants);
 				if (bestAnt == null) {
 					bestAnt = ant;
-					bestEval = ant.distances();
-				} else if (ant.distances() < bestEval) {
+					bestDistance = ant.distances();
+				} else if (ant.distances() < bestDistance) {
 					bestAnt = ant;
-					bestEval = ant.distances();
+					bestDistance = ant.distances();
 				}
 				window.draw(bestAnt.getTour());
-				bestDistances.add(Integer.toString(bestEval));
+				bestDistances.add(Integer.toString(bestDistance));
 			}
 			bestDistances.add("newLine");
-			System.out.print(".");
 		}
 		try {
 			writeToCSVFile();
+			System.out.println("bestEval = " + bestDistance + "\nDone");
 		} catch(FileNotFoundException e) {
 			
 		}
-		
-		System.out.println("\nFinal Evaluation: " + bestEval);
 	}
 
 	/**
